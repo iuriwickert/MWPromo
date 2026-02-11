@@ -2,17 +2,17 @@
 // Você pode editar os preços e quantidades aqui facilmente
 
 // Data da última atualização do estoque (edite aqui)
-const dataUltimaAtualizacao = "10/02/2026 - 14:30";
+const dataUltimaAtualizacao = "10/02/2026 - 22:52";
 
 const produtos = [
-    { id: 1, nome: "Mi-24 Superhind", preco: 70.00, estoque: 12 },
-    { id: 2, nome: "F117 Seahawk", preco: 70.00, estoque: 12 },
+    { id: 1, nome: "Mi-24 Superhind", preco: 70.00, estoque: 11 },
+    { id: 2, nome: "F117 Seahawk", preco: 70.00, estoque: 11 },
     { id: 3, nome: "IDX", preco: 70.00, estoque: 4 },
     { id: 4, nome: "Apache", preco: 45.00, estoque: 3 },
     { id: 5, nome: "BMD-4M", preco: 45.00, estoque: 2 },
     { id: 6, nome: "TOS-01", preco: 40.00, estoque: 6 },
     { id: 7, nome: "F-47 Prototype", preco: 40.00, estoque: 1 },
-    { id: 8, nome: "Su-47", preco: 35.00, estoque: 17 },
+    { id: 8, nome: "Su-47", preco: 35.00, estoque: 16 },
     { id: 9, nome: "TO-55", preco: 35.00, estoque: 1 },
     { id: 10, nome: "B2", preco: 7.50, estoque: 26 },
     { id: 11, nome: "Su-25", preco: 5.00, estoque: 8 },
@@ -30,3 +30,4 @@ const produtos = [
     { id: 23, nome: "BTR-80 Kliver", preco: 2.00, estoque: 2 },
     { id: 24, nome: "AA-12", preco: 1.50, estoque: 22 }
 ];
+

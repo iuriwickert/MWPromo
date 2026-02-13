@@ -2,7 +2,7 @@
 // Você pode editar os preços e quantidades aqui facilmente
 
 // Data da última atualização do estoque (edite aqui)
-const dataUltimaAtualizacao = "10/02/2026 - 22:52";
+const dataUltimaAtualizacao = "13/02/2026 - 19:05";
 
 const produtos = [
     { id: 1, nome: "Mi-24 Superhind", preco: 70.00, estoque: 11 },
@@ -11,7 +11,7 @@ const produtos = [
     { id: 4, nome: "Apache", preco: 45.00, estoque: 3 },
     { id: 5, nome: "BMD-4M", preco: 45.00, estoque: 2 },
     { id: 6, nome: "TOS-01", preco: 40.00, estoque: 6 },
-    { id: 7, nome: "F-47 Prototype", preco: 40.00, estoque: 1 },
+    { id: 7, nome: "F-47 Prototype", preco: 40.00, estoque: 0 },
     { id: 8, nome: "Su-47", preco: 35.00, estoque: 16 },
     { id: 9, nome: "TO-55", preco: 35.00, estoque: 1 },
     { id: 10, nome: "B2", preco: 7.50, estoque: 26 },

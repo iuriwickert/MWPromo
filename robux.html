@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora de Robux</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Sora:wght@400;600&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --bg-1: #080d18;
+            --bg-2: #111b2f;
+            --bg-3: #172744;
+            --card: rgba(13, 20, 35, 0.84);
+            --text: #e6edf9;
+            --muted: #98a6be;
+            --accent: #38bdf8;
+            --accent-2: #0ea5e9;
+            --ok: #4ade80;
+            --ring: rgba(56, 189, 248, 0.3);
+            --shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+            --radius: 20px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Sora", "Segoe UI", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 10% 12%, rgba(56, 189, 248, 0.17) 0 8%, transparent 8.2%),
+                radial-gradient(circle at 88% 14%, rgba(14, 165, 233, 0.2) 0 7%, transparent 7.2%),
+                linear-gradient(135deg, var(--bg-1), var(--bg-2) 42%, var(--bg-3));
+            display: grid;
+            place-items: center;
+            padding: 28px;
+        }
+
+        .blob,
+        .blob::before,
+        .blob::after {
+            position: fixed;
+            content: "";
+            z-index: -1;
+            border-radius: 999px;
+            filter: blur(2px);
+            animation: float 9s ease-in-out infinite;
+        }
+
+        .blob {
+            width: 260px;
+            height: 260px;
+            background: rgba(14, 165, 233, 0.2);
+            top: 8%;
+            left: -60px;
+        }
+
+        .blob::before {
+            width: 160px;
+            height: 160px;
+            background: rgba(56, 189, 248, 0.25);
+            right: -450px;
+            top: 58vh;
+        }
+
+        .blob::after {
+            width: 180px;
+            height: 180px;
+            background: rgba(2, 132, 199, 0.22);
+            left: 62vw;
+            top: 3vh;
+            animation-duration: 11s;
+        }
+
+        .card {
+            width: min(700px, 100%);
+            background: var(--card);
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(8px);
+            border-radius: var(--radius);
+            padding: 28px;
+            animation: card-enter 500ms ease;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font: 700 clamp(1.6rem, 2vw + 1rem, 2.4rem) "Space Grotesk", "Segoe UI", sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            margin: 0 0 22px;
+            color: var(--muted);
+            line-height: 1.5;
+            font-size: 0.96rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .field {
+            display: grid;
+            gap: 7px;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: reveal 420ms ease forwards;
+        }
+
+        .field:nth-child(2) {
+            animation-delay: 70ms;
+        }
+
+        .field:nth-child(3) {
+            animation-delay: 140ms;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font: 600 0.85rem "Space Grotesk", "Segoe UI", sans-serif;
+            color: #c4d2e9;
+            letter-spacing: 0.02em;
+        }
+
+        input {
+            width: 100%;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            background: rgba(15, 23, 42, 0.78);
+            border-radius: 14px;
+            padding: 12px 13px;
+            font: 500 1rem "Sora", "Segoe UI", sans-serif;
+            color: var(--text);
+            outline: none;
+            transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--ring);
+            transform: translateY(-1px);
+        }
+
+        .k-field input {
+            max-width: 110px;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 140px;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        button {
+            border: 0;
+            border-radius: 14px;
+            padding: 12px;
+            font: 700 0.92rem "Space Grotesk", "Segoe UI", sans-serif;
+            cursor: pointer;
+            transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(130deg, var(--accent), var(--accent-2));
+            color: #fff;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.26);
+        }
+
+        .btn-secondary {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            color: #d3dfef;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .result {
+            margin-top: 16px;
+            border-radius: 14px;
+            padding: 13px 14px;
+            background: rgba(15, 23, 42, 0.68);
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            font-size: 0.95rem;
+            color: #c8d4e9;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+        }
+
+        .result.ok {
+            color: var(--ok);
+            border-color: rgba(74, 222, 128, 0.4);
+            background: rgba(22, 101, 52, 0.28);
+        }
+
+        .examples {
+            margin-top: 16px;
+            font-size: 0.85rem;
+            color: var(--muted);
+            background: rgba(15, 23, 42, 0.58);
+            border-radius: 12px;
+            padding: 11px 12px;
+            line-height: 1.5;
+        }
+
+        .history {
+            margin-top: 14px;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.58);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+
+        .history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .history-header strong {
+            font: 700 0.88rem "Space Grotesk", "Segoe UI", sans-serif;
+            color: #d6e3f7;
+        }
+
+        .tiny-btn {
+            padding: 8px 10px;
+            font-size: 0.75rem;
+            border-radius: 10px;
+            background: rgba(30, 41, 59, 0.95);
+            border: 1px solid rgba(148, 163, 184, 0.38);
+            color: #d6e3f7;
+        }
+
+        .history-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            gap: 6px;
+        }
+
+        .history-list li {
+            font-size: 0.82rem;
+            color: #bdd0ea;
+            padding: 7px 8px;
+            border-radius: 9px;
+            background: rgba(2, 6, 23, 0.5);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+        }
+
+        @keyframes card-enter {
+            from {
+                transform: translateY(12px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes reveal {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-18px);
+            }
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 16px;
+            }
+
+            .card {
+                padding: 18px;
+                border-radius: 16px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .k-field input {
+                max-width: 100%;
+            }
+
+            .actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="blob" aria-hidden="true"></div>
+
+    <main class="card">
+        <h1>Calculadora de Robux por K</h1>
+        <p class="subtitle">
+            O K e o valor em reais para cada 1000 Robux. Preencha o K, informe quantidade
+            ou valor e clique em calcular. O sistema usa o ultimo campo que voce alterou.
+        </p>
+
+        <section class="grid" aria-label="Calculadora">
+            <div class="field full k-field">
+                <label for="kValue">K (valor por 1000 Robux)</label>
+                <input id="kValue" type="number" min="0" step="0.01" placeholder="Exemplo: 35" />
+            </div>
+
+            <div class="field">
+                <label for="robuxValue">Quantidade de Robux</label>
+                <input id="robuxValue" type="number" min="0" step="1" placeholder="Exemplo: 1000" />
+            </div>
+
+            <div class="field">
+                <label for="moneyValue">Valor (R$)</label>
+                <input id="moneyValue" type="number" min="0" step="0.01" placeholder="Exemplo: 35" />
+            </div>
+        </section>
+
+        <div class="actions">
+            <button class="btn-primary" id="calculateBtn" type="button">Calcular</button>
+            <button class="btn-secondary" id="clearBtn" type="button">Limpar</button>
+        </div>
+
+        <p class="result" id="resultText">Insira os dados para calcular.</p>
+
+        <section class="history" aria-label="Historico local">
+            <div class="history-header">
+                <strong>Mini historico local</strong>
+                <button class="tiny-btn" id="clearHistoryBtn" type="button">Apagar historico</button>
+            </div>
+            <ul class="history-list" id="historyList"></ul>
+        </section>
+
+        <p class="examples">
+            Exemplo 1: 1000 Robux com K 35 = R$ 35,00<br />
+            Exemplo 2: R$ 35,00 com K 35 = 1000 Robux
+        </p>
+    </main>
+
+    <script>
+        const kInput = document.getElementById("kValue");
+        const robuxInput = document.getElementById("robuxValue");
+        const moneyInput = document.getElementById("moneyValue");
+        const resultText = document.getElementById("resultText");
+        const calculateBtn = document.getElementById("calculateBtn");
+        const clearBtn = document.getElementById("clearBtn");
+        const clearHistoryBtn = document.getElementById("clearHistoryBtn");
+        const historyList = document.getElementById("historyList");
+
+        const HISTORY_KEY = "robux-k-history";
+        const MAX_HISTORY_ITEMS = 6;
+        let lastChangedField = "robux";
+
+        function formatBRL(value) {
+            return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+        }
+
+        function formatNumber(value, maximumFractionDigits) {
+            return value.toLocaleString("pt-BR", {
+                minimumFractionDigits: 0,
+                maximumFractionDigits
+            });
+        }
+
+        function readPositive(inputElement) {
+            const value = Number(inputElement.value);
+            return Number.isFinite(value) && value > 0 ? value : null;
+        }
+
+        function showMessage(message, success) {
+            resultText.textContent = message;
+            resultText.classList.toggle("ok", Boolean(success));
+        }
+
+        function loadHistory() {
+            try {
+                const raw = localStorage.getItem(HISTORY_KEY);
+                const parsed = raw ? JSON.parse(raw) : [];
+                return Array.isArray(parsed) ? parsed : [];
+            } catch {
+                return [];
+            }
+        }
+
+        function saveHistory(history) {
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+        }
+
+        function renderHistory() {
+            const history = loadHistory();
+            historyList.innerHTML = "";
+
+            if (history.length === 0) {
+                const emptyItem = document.createElement("li");
+                emptyItem.textContent = "Sem calculos ainda.";
+                historyList.appendChild(emptyItem);
+                return;
+            }
+
+            history.forEach(function (item) {
+                const li = document.createElement("li");
+                li.textContent = item;
+                historyList.appendChild(li);
+            });
+        }
+
+        function addHistory(entry) {
+            const time = new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+            const history = loadHistory();
+            history.unshift(time + " - " + entry);
+            saveHistory(history.slice(0, MAX_HISTORY_ITEMS));
+            renderHistory();
+        }
+
+        function calculateByRobux() {
+            const k = readPositive(kInput);
+            const robux = readPositive(robuxInput);
+
+            if (!k) {
+                showMessage("Informe um K valido (maior que zero).", false);
+                return;
+            }
+
+            if (!robux) {
+                showMessage("Informe a quantidade de Robux para calcular o valor.", false);
+                return;
+            }
+
+            const money = (robux / 1000) * k;
+            moneyInput.value = money.toFixed(2);
+            const message = formatNumber(robux, 0) + " Robux com K " + formatNumber(k, 2) + " = " + formatBRL(money);
+            showMessage(message, true);
+            addHistory(message);
+        }
+
+        function calculateByMoney() {
+            const k = readPositive(kInput);
+            const money = readPositive(moneyInput);
+
+            if (!k) {
+                showMessage("Informe um K valido (maior que zero).", false);
+                return;
+            }
+
+            if (!money) {
+                showMessage("Informe o valor em reais para calcular os Robux.", false);
+                return;
+            }
+
+            const robux = (money / k) * 1000;
+            robuxInput.value = String(Math.round(robux));
+            const message = formatBRL(money) + " com K " + formatNumber(k, 2) + " = " + formatNumber(robux, 2) + " Robux";
+            showMessage(message, true);
+            addHistory(message);
+        }
+
+        function calculateFromLastChanged() {
+            const robux = readPositive(robuxInput);
+            const money = readPositive(moneyInput);
+
+            if (lastChangedField === "robux" && robux) {
+                calculateByRobux();
+                return;
+            }
+
+            if (lastChangedField === "money" && money) {
+                calculateByMoney();
+                return;
+            }
+
+            if (robux) {
+                calculateByRobux();
+                return;
+            }
+
+            if (money) {
+                calculateByMoney();
+                return;
+            }
+
+            showMessage("Informe quantidade de Robux ou valor em reais para calcular.", false);
+        }
+
+        function clearAll() {
+            kInput.value = "";
+            robuxInput.value = "";
+            moneyInput.value = "";
+            lastChangedField = "robux";
+            showMessage("Insira os dados para calcular.", false);
+            kInput.focus();
+        }
+
+        function runCalculateOnEnter(event) {
+            if (event.key === "Enter") {
+                calculateFromLastChanged();
+            }
+        }
+
+        calculateBtn.addEventListener("click", calculateFromLastChanged);
+        clearBtn.addEventListener("click", clearAll);
+        clearHistoryBtn.addEventListener("click", function () {
+            localStorage.removeItem(HISTORY_KEY);
+            renderHistory();
+        });
+
+        robuxInput.addEventListener("input", function () {
+            lastChangedField = "robux";
+        });
+
+        moneyInput.addEventListener("input", function () {
+            lastChangedField = "money";
+        });
+
+        kInput.addEventListener("keydown", runCalculateOnEnter);
+        robuxInput.addEventListener("keydown", runCalculateOnEnter);
+        moneyInput.addEventListener("keydown", runCalculateOnEnter);
+
+        renderHistory();
+    </script>
+</body>
+
+</html>
